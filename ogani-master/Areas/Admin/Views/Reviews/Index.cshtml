@@ -1,0 +1,84 @@
+﻿@using X.PagedList
+@model X.PagedList.IPagedList<ogani_master.Models.Review>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="app-content mt-3">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md">
+                                <h3 class="card-title">Review List</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="tbl" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Products</th>
+                                        <th>User Name</th>
+                                        <th>Rate</th>
+                                        <th>Contents</th>
+                                        <th>Date Rate</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.Rate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Contents)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.ReviewDate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.User.UserId)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Product.PRO_ID)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.UpdatedBy)</td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.REV_ID" >
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-action="Details" asp-route-id="@item.REV_ID" class="text-info ms-3">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.REV_ID" class="text-danger ms-3">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-center mt-3">
+                            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchQuery = ViewBag.SearchQuery }),
+                                     new PagedListRenderOptions
+                            {
+                                DisplayLinkToFirstPage = PagedListDisplayMode.Never,  // Không hiển thị nút "Trang đầu"
+                                DisplayLinkToLastPage = PagedListDisplayMode.Never,   // Không hiển thị nút "Trang cuối"
+                                DisplayLinkToPreviousPage = PagedListDisplayMode.Always,  // Luôn hiển thị "Trang trước"
+                                DisplayLinkToNextPage = PagedListDisplayMode.Always,      // Luôn hiển thị "Trang sau"
+                                MaximumPageNumbersToDisplay = 5,  // Số trang hiển thị giữa
+                                UlElementClasses = new[] { "pagination", "justify-content-center" },
+                                LiElementClasses = new[] { "page-item", "me-2" },
+                                PageClasses = new[] { "page-link", "bg-success", "text-white" }
+                            })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>

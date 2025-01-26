@@ -1,0 +1,85 @@
+﻿@model ogani_master.Models.Banner
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+<div class="app-content mt-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-info card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Banner Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Title)</th>
+                                        <td>@Html.DisplayFor(model => model.Title)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.DisplayOrder)</th>
+                                        <td>@Html.DisplayFor(model => model.DisplayOrder)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Image)</th>
+                                        <td>
+                                            <img src="@Url.Content("~/data/banner/" + Model.Image)" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd;" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Url)</th>
+                                        <td>@Html.DisplayFor(model => model.Url)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+                                        <td>@Html.DisplayFor(model => model.CreatedDate)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
+                                        <td>@Html.DisplayFor(model => model.CreatedBy)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.UpdatedDate)</th>
+                                        <td>@Html.DisplayFor(model => model.UpdatedDate)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.UpdatedBy)</th>
+                                        <td>@Html.DisplayFor(model => model.UpdatedBy)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <a asp-action="Edit" asp-route-id="@Model?.BAN_ID" class="btn btn-primary">Edit</a> 
+                            <a asp-action="Index" class="btn btn-secondary me-3">Back to List</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = () => {
+        document.getElementById("Image").onchange = (e) => {
+            var preview = document.getElementById('imgPreview');
+            var file = e.target.files[0];
+            var reader  = new FileReader();
+
+            reader.onloadend = function () {
+              preview.src = reader.result;
+            }
+
+            if (file) {
+              reader.readAsDataURL(file);
+            } else {
+              preview.src = '';
+            }
+        };
+    }
+</script>

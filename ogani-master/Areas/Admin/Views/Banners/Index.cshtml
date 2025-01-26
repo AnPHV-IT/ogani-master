@@ -1,0 +1,119 @@
+﻿@model IEnumerable<ogani_master.Models.Banner>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="app-content mt-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md">
+                                <h3 class="card-title">Banner List</h3>
+                            </div>
+                            <div class="col-md-auto">
+                                <a asp-action="Create" class="btn btn-success">
+                                    <i class="fa-light fa-add me-1"></i> Create New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Title)</th>
+                                        <th>@Html.DisplayNameFor(model => model.DisplayOrder)</th>
+                                        <th>@Html.DisplayNameFor(model => model.Image)</th>
+                                        <th>@Html.DisplayNameFor(model => model.Url)</th>
+                                        <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
+                                        <th>@Html.DisplayNameFor(model => model.UpdatedBy)</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="text-wrap text-break" title="@item.Title">
+                                                @if (!string.IsNullOrEmpty(item.Title))
+                                                {
+                                                    @(
+                                                        item.Title.Length > 50
+                                                        ? $"{item.Title.Substring(0, 50)}..."
+                                                        : item.Title
+                                                        )
+                                                }
+                                                else
+                                                {
+                                                    <i>No Title</i>
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.DisplayOrder)</td>
+                                            <td>
+                                                <img src="@Url.Content("~/data/banner/" + item.Image)" style="max-width: 100px; max-height: 100px; border: 1px solid #ddd;" />
+
+                                            </td>
+                                            <td class="text-wrap text-break" title="@item.Url">
+                                                @if (!string.IsNullOrEmpty(item.Url))
+                                                {
+                                                    @(
+                                                        item.Url.Length > 50
+                                                        ? $"{item.Url.Substring(0, 50)}..."
+                                                        : item.Url
+                                                        )
+                                                }
+                                                else
+                                                {
+                                                    <i>No URL</i>
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.UpdatedBy)</td>
+                                 
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.BAN_ID" >
+                                                    <i class="fas fa-edit"></i> 
+                                                </a>
+                                                <a asp-action="Details" asp-route-id="@item.BAN_ID" class="text-info ms-3">
+                                                    <i class="fas fa-info-circle"></i> 
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.BAN_ID" class="text-danger ms-3">
+                                                    <i class="fas fa-trash-alt"></i> 
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = () => {
+        document.getElementById("Image").onchange = (e) => {
+            var preview = document.getElementById('imgPreview');
+            var file = e.target.files[0];
+            var reader  = new FileReader();
+
+            reader.onloadend = function () {
+              preview.src = reader.result;
+            }
+
+            if (file) {
+              reader.readAsDataURL(file);
+            } else {
+              preview.src = '';
+            }
+        };
+    }
+</script>
