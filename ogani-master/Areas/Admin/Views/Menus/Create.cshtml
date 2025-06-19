@@ -1,0 +1,75 @@
+﻿@model ogani_master.Models.Menu
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="app-content mt-3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h4 class="card-title">Create New Menu</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <form asp-action="Create" enctype="multipart/form-data">
+                            <!-- Parent ID Field -->
+                            @* <div class="form-group mb-3"> *@
+                            @*     <label asp-for="PARENT_ID" class="control-label"></label> *@
+                            @*     <select asp-for="PARENT_ID" class="form-control" asp-items="ViewBag.PARENT_ID"> *@
+                            @*         <option value="">-- Select Parent Menu --</option> *@
+                            @*     </select> *@
+                            @*     <span asp-validation-for="PARENT_ID" class="text-danger"></span> *@
+                            @* </div> *@
+                            <div class="form-group">
+                                <label for="PARENT_ID">Select Parent Menu (Optional)</label>
+                                <select class="form-control" id="PARENT_ID" name="PARENT_ID">
+                                    <option value="">-- Select Parent Menu --</option>
+                                    @foreach (var menu in ViewBag.PARENT_ID as List<SelectListItem>)
+                                    {
+                                        <option value="@menu.Value">@menu.Text</option>
+                                    }
+                                </select>
+                            </div>
+
+
+
+                            <!-- Title Field -->
+                            <div class="form-group mb-3">
+                                <label asp-for="Title" class="control-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <!-- URL Field -->
+                            <div class="form-group mb-3">
+                                <label asp-for="Url" class="control-label"></label>
+                                <input asp-for="Url" class="form-control" />
+                                <span asp-validation-for="Url" class="text-danger"></span>
+                            </div>
+
+
+                            <!-- Submit and Back Buttons -->
+                            <div class="form-group mb-3">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-1"></i> Save Menu
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i> Back to List
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

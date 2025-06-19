@@ -1,0 +1,44 @@
+{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "HASH_MESSAGE_SECRET_KEY": "your-secret-hash-key",
+        "PUBLIC_SIGNATURE_CLIENT_ID": "your-public-signature-client-id"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5037"
+    },
+    "https": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "HASH_MESSAGE_SECRET_KEY": "your-secret-hash-key",
+        "PUBLIC_SIGNATURE_CLIENT_ID": "your-public-signature-client-id"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7173;http://localhost:5037"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "HASH_MESSAGE_SECRET_KEY": "your-secret-hash-key",
+        "PUBLIC_SIGNATURE_CLIENT_ID": "your-public-signature-client-id"
+      }
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:59392/",
+      "sslPort": 44316
+    }
+  }
+}

@@ -1,0 +1,1086 @@
+﻿@using ogani_master.Helpers;
+@using System.Globalization;
+
+@{
+    User CurrentUser = ViewBag.CurrentUser;
+    List<FavoritesModel> favorites = ViewBag.Favorites;
+    var settings = ViewBag.Settings as List<ogani_master.Models.Setting>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap"
+    rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Thêm SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet" />
+
+    <!-- Thêm SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.js"></script>
+
+
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Admin/plugins/font-awesome/css/all.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/elegant-icons.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/nice-select.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/jquery-ui.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/slicknav.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/style.css" type="text/css" />
+
+    @RenderSection("Styles", false)
+
+    <style>
+        body .truncate {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+        }
+        #root {
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 100vh;
+        }
+
+        #root section {
+        flex: 1 !important;
+        }
+
+        .header__menu__dropdown li.active a {
+        color: #7fad39 !important;
+        }
+
+        .profile-dropdown {
+        position: relative;
+        }
+
+        .profile-trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        }
+
+        .profile-trigger:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-image {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .fa-chevron-down {
+        font-size: 12px;
+        color: #666;
+        margin-right: 5px;
+        }
+
+        .profile-menu {
+        width: 250px;
+        padding: 0;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-top: 10px;
+        animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .dropdown-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        background-color: #f8f9fa;
+        border-radius: 12px 12px 0 0;
+        }
+
+        .menu-profile-image {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        }
+
+        .user-info {
+        flex: 1;
+        }
+
+        .user-info h6 {
+        margin: 0;
+        color: #333;
+        font-weight: 600;
+        }
+
+        .user-info small {
+        color: #666;
+        }
+
+        .dropdown-item {
+        padding: 12px 15px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #007bff;
+        }
+
+        .dropdown-item i {
+        width: 16px;
+        text-align: center;
+        color: #666;
+        }
+
+        .dropdown-item:hover i {
+        color: #007bff;
+        }
+
+        .logout-form {
+        padding: 0;
+        margin: 0;
+        }
+
+        .logout-button {
+        width: 100%;
+        padding: 12px 15px;
+        background: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #dc3545;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        }
+
+        .logout-button:hover {
+        background-color: #fff1f1;
+        }
+
+        .logout-button i {
+        width: 16px;
+        text-align: center;
+        }
+
+        keyframes fadeIn {
+        from
+
+        {
+        opacity: 0;
+        transform: translateY(-10px);
+        }
+
+        to {
+        opacity: 1;
+        transform: translateY(0);
+        }
+
+        }
+
+        media (max-width: 768px) {
+        .profile-menu
+
+        {
+        width: 200px;
+        }
+
+        }
+
+
+        .favorite-dropdown {
+        position: relative;
+        }
+
+        .favorite-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 300px;
+        background: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        display: none;
+        z-index: 1000;
+        margin-top: 10px;
+        }
+
+        .favorite-menu.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+        }
+
+        .favorite-items {
+        max-height: 300px;
+        overflow-y: auto;
+        }
+
+        .favorite-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f5f5f5;
+        position: relative;
+        }
+
+        .favorite-item:last-child {
+        border-bottom: none;
+        }
+
+        .favorite-item img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 12px;
+        }
+
+        .favorite-item-info {
+        flex: 1;
+        padding-right: 25px;
+        }
+
+        .favorite-item-title {
+        font-size: 14px;
+        margin: 0 0 5px 0;
+        }
+
+        .favorite-item-title a {
+        color: #333;
+        text-decoration: none;
+        }
+
+        .favorite-item-title a:hover {
+        color: #7fad39;
+        }
+
+        .favorite-item-price {
+        font-size: 14px;
+        color: #7fad39;
+        font-weight: 600;
+        display: block;
+        }
+
+        .btn-remove {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        padding: 5px;
+        transition: color 0.2s;
+        }
+
+        .btn-remove:hover {
+        color: #dc3545;
+        }
+
+        .favorite-empty {
+        text-align: center;
+        padding: 30px 0;
+        color: #666;
+        }
+
+        .favorite-empty i {
+        font-size: 40px;
+        color: #ddd;
+        margin-bottom: 10px;
+        }
+
+        .favorite-empty p {
+        margin: 0;
+        font-size: 14px;
+        }
+
+        .favorite-footer {
+        text-align: center;
+        padding-top: 15px;
+        border-top: 1px solid #f5f5f5;
+        margin-top: 10px;
+        }
+
+        .view-all {
+        color: #7fad39;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        }
+
+        .view-all:hover {
+        text-decoration: underline;
+        }
+
+        .favorite-items::-webkit-scrollbar {
+        width: 6px;
+        }
+
+        .favorite-items::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+        }
+
+        .favorite-items::-webkit-scrollbar-thumb {
+        background: #7fad39;
+        border-radius: 3px;
+        }
+
+        .favorite-items::-webkit-scrollbar-thumb:hover {
+        background: #6a9230;
+        }
+
+        .toast {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 9999 !important;
+        }
+
+        .chat-box-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #7fad39;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-box-button:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-box-button i {
+            color: white;
+            font-size: 24px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Chat Box Container */
+        .chat-box-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .chat-box-container.active {
+            display: flex;
+        }
+
+        /* Chat Box Header */
+        .chat-box-header {
+            padding: 15px 20px;
+            background-color: #7fad39;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-box-header h5 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .close-chat-box {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .close-chat-box:hover {
+            opacity: 0.8;
+        }
+
+        /* Chat Box Body */
+        .chat-box-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Chat Box Footer */
+        .chat-box-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-box-footer .input-group {
+            background-color: #f8f9fa;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .chat-box-footer input {
+            border: none;
+            padding: 12px 20px;
+            background-color: transparent;
+        }
+
+        .chat-box-footer input:focus {
+            box-shadow: none;
+        }
+
+        .send-button {
+            border: none;
+            background-color: #7fad39;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 0 25px 25px 0;
+        }
+
+        .send-button:hover {
+            background-color: #689f2c;
+        }
+
+        /* Message Bubbles */
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 5px;
+        }
+
+        .message.received {
+            background-color: #f1f3f5;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.sent {
+            background-color: #7fad39;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-box-container.active {
+            animation: slideIn 0.3s ease forwards;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '@Html.Raw(TempData["SuccessMessage"].ToString())',
+                confirmButtonText: 'OK',
+                showCloseButton: true // Hiển thị nút đóng
+            });
+        </script>
+    }
+
+    <main id="root">
+        <header class="header">
+            <div class="header__top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="header__top__left">
+                                <ul>
+                                    @if (settings != null && settings.Any())
+                                    {
+                                        @foreach (var setting in settings)
+                                        {
+                                            if (setting.Name.Equals("Email", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <li><i class="fa fa-envelope"></i> @setting.Value</li>
+                                            }
+                                            else if (setting.Name.Equals("FreeShippingMessage", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <li>@setting.Value</li>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li>No settings available</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 d-flex justify-content-end">
+                            <div class="header__top__right d-flex align-items-center">
+                                <div class="header__top__right__social d-flex align-items-center">
+                                    @if (settings != null && settings.Any())
+                                    {
+                                        @foreach (var link in settings)
+                                        {
+                                            if (link.Name.Equals("Facebook", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <a href="@link.Value" target="_blank"><i class="fa fa-facebook"></i></a>
+                                            }
+                                            else if (link.Name.Equals("Instagram", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <a href="@link.Value" target="_blank"><i class="fa fa-instagram"></i></a>
+                                            }
+                                            else if (link.Name.Equals("Twitter", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <a href="@link.Value" target="_blank"><i class="fa fa-twitter"></i></a>
+                                            }
+                                            else if (link.Name.Equals("Pinterest", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <a href="@link.Value" target="_blank"><i class="fa fa-pinterest"></i></a>
+                                            }
+                                        }
+                                    }
+
+                                    <!-- Hiển thị mặc định các biểu tượng khi không có dữ liệu -->
+                                    <a href="https://facebook.com" target="_blank"><i class="fa fa-facebook"></i></a>
+                                    <a href="https://instagram.com" target="_blank"><i class="fa fa-instagram"></i></a>
+                                    <a href="https://twitter.com" target="_blank"><i class="fa fa-twitter"></i></a>
+                                    <a href="https://pinterest.com" target="_blank"><i class="fa fa-pinterest"></i></a>
+
+                                </div>
+                                <div class="header__top__right__language d-flex align-items-center">
+                                    <img src="~/uploads/language.png" alt="" />
+                                    <div>English</div>
+                                    <span class="arrow_carrot-down"></span>
+                                    <ul>
+                                        <li><a href="#">Spanis</a></li>
+                                        <li><a href="#">English</a></li>
+                                    </ul>
+                                </div>
+                                @if (CurrentUser != null)
+                                {
+                                    <div class="profile-dropdown">
+                                        <div class="dropdown">
+                                            <div class="profile-trigger" role="button" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <img src="~/@CurrentUser.ProfilePictureUrl" alt="Profile" class="profile-image">
+                                                <i class="fas fa-chevron-down"></i>
+                                            </div>
+
+                                            <div class="dropdown-menu profile-menu" aria-labelledby="profileDropdown">
+                                                <div class="dropdown-header">
+                                                    <img src="~/@CurrentUser.ProfilePictureUrl" alt="Profile" class="menu-profile-image">
+                                                    <div class="user-info">
+                                                        <h6>@CurrentUser.LastName @CurrentUser.FirstName</h6>
+                                                        <small>@(CurrentUser.Role == 1 ? "Admin" : "User")</small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="dropdown-divider"></div>
+
+                                                <a class="dropdown-item" asp-controller="Auth" asp-action="ProfilePage">
+                                                    <i class="fas fa-user"></i> My Profile
+                                                </a>
+
+                                                <form class="dropdown-item logout-form" asp-controller="Auth" asp-action="Logout">
+                                                    <button type="submit" class="logout-button">
+                                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="header__top__right__auth">
+                                        <a asp-controller="Auth" asp-action="SignInPage"><i class="fa fa-user"></i> Login</a>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="header__logo">
+                            <a href="@Url.Action("Index","Home")"><img src="~/uploads/logo.png" alt="" /></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <nav class="header__menu">
+                            <ul>
+                                <li class="@Html.IsActive("Home", "Index")"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                                <li class="@Html.IsActive("ShopGrid", "Index")"><a href="@Url.Action("Index", "ShopGrid")">Products</a></li>
+
+                                <li class="@Html.IsActive("Blog", "Index")"><a href="@Url.Action("Index", "Blog")">Blog</a></li>
+                                <li class="@Html.IsActive("Contact", "Index")"><a href="@Url.Action("Index", "Contact")">Contact</a></li>
+                            </ul>
+
+                        </nav>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="header__cart">
+                            <ul>
+                                <li class="favorite-dropdown" onclick="handleShowFavorite(this)">
+                                    <a href="#"><i class="fa fa-heart"></i> <span>@(favorites?.Count ?? 0)</span></a>
+                                    <div class="favorite-menu">
+                                        @if (favorites != null && favorites.Any())
+                                        {
+                                            <div class="favorite-items">
+                                                @foreach (FavoritesModel item in favorites)
+                                                {
+                                                    <div class="favorite-item">
+                                                        <img src="~/Data/Product/@item.Product.Avatar" alt="@item.Product.Name">
+                                                        <div class="favorite-item-info">
+                                                            <h6 class="favorite-item-title">
+                                                                <a href="@Url.Action("Index", "Product", new { uid = item.ProductId })">
+                                                                    @item.Product.Name
+                                                                </a>
+                                                            </h6>
+                                                            <span class="favorite-item-price">@item.Product.Price.ToString("C0", new CultureInfo("en-US"))</span>
+                                                            <form asp-controller="Auth" asp-action="AddToFavorite" method="post" class="d-inline">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="prodID" value="@item.ProductId" />
+                                                                <button type="submit" class="btn-remove">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="favorite-empty">
+                                                <i class="fa fa-heart-o"></i>
+                                                <p>No favorite items</p>
+                                            </div>
+                                        }
+                                    </div>
+                                </li>
+                                <li>
+                                    <a asp-controller="ShopingCart" asp-action="Index"><i class="fa fa-shopping-bag"></i> <span>@ViewBag.CartCount</span></a>
+                                </li>
+                            </ul>
+                            <div class="header__cart__price">item: <span>@(ViewBag.CartTotal.ToString("C0", new CultureInfo("en-US")))</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="humberger__open">
+                    <i class="fa fa-bars"></i>
+                </div>
+            </div>
+        </header>
+
+        @if (Context.Request.Path != "/")
+        {
+            <section class="hero hero-normal">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="hero__categories">
+                                @{
+                                    // Ép kiểu ViewBag.Categories thành List<Category>
+                                    var categories = ViewBag.Categories as List<ogani_master.Models.Category>;
+
+                                    var displayOrder1Category = categories?.FirstOrDefault(c => c.DisplayOrder == 1);
+                                }
+                                <div class="hero__categories__all">
+                                    <i class="fa fa-bars"></i>
+
+                                    @if (displayOrder1Category != null)
+                                    {
+                                        <span class="text-white">
+                                                @displayOrder1Category.Name
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span>All Departments</span>
+                                    }
+                                </div>
+                                    <ul>
+                                        @if (categories != null && categories.Count > 0)
+                                        {
+                                            foreach (var category in categories.Where(c => c.DisplayOrder != 1))
+                                            {
+                                                <li>
+                                                    <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.CAT_ID">
+                                                        @category.Name
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li>No categories available</li>
+                                        }
+                                    </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="hero__search">
+                                <div class="hero__search__form">
+                                    <form asp-controller="Product" asp-action="Search" method="get" class="container">
+                                        <div class="hero__search__categories">
+                                            All Categories
+                                            @* <span class="arrow_carrot-down"></span> *@
+                                        </div>
+                                        <input type="text" name="query" placeholder="What do yo u need?" />
+                                        <button type="submit" class="site-btn">SEARCH</button>
+                                    </form>
+                                </div>
+                                <div class="hero__search__phone">
+                                    <div class="hero__search__phone__icon">
+                                        <i class="fa fa-phone"></i>
+                                    </div>
+                                    <div class="hero__search__phone__text">
+                                        @if (settings != null && settings.Any())
+                                        {
+                                            @foreach (var setting in settings)
+                                            {
+                                                if (setting.Name.Equals("Phone", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    <h5>@setting.Value</h5>
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <h5>No phone number available</h5>
+                                        }
+                                        <span>support 24/7 time</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+
+        <section role="main">
+            @RenderBody()
+        </section>
+
+        <footer class="footer spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="footer__about">
+                            <div class="footer__about__logo">
+                                <a href="./index.html"><img src="~/uploads/logo.png" alt="" /></a>
+                            </div>
+                            <ul>
+                                @if (settings != null && settings.Any())
+                                {
+                                    @foreach (var setting in settings)
+                                    {
+                                        if (setting.Name.Equals("Email", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <li><i class="fa fa-envelope"></i> @setting.Value</li>
+                                        }
+                                        else if (setting.Name.Equals("Phone", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <li><i class="fa fa-phone"></i> @setting.Value</li>
+                                        }
+                                        else if (setting.Name.Equals("Address", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <li><i class="fa fa-map-marker"></i> @setting.Value</li>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <li>No settings available</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+                        <div class="footer__widget">
+                            <h6><a asp-controller="Home" asp-action="Index" style="text-decoration: none; color: inherit;">Home</a></h6>
+                            <ul>
+                                <li><a asp-controller="Blog" asp-action="Index">About Us</a></li>
+                                <li><a asp-controller="Contact" asp-action="Index">About Our Shop</a></li>
+                                <li><a asp-controller="Home" asp-action="Index">Secure Shopping</a></li>
+                                <li><a asp-controller="Product" asp-action="Index">Delivery infomation</a></li>
+                                <li><a asp-controller="Product" asp-action="Index">Privacy Policy</a></li>
+                                <li><a asp-controller="Product" asp-action="Index">Our Sitemap</a></li>
+                            </ul>
+                            <ul>
+                                <li><a asp-controller="Contact" asp-action="Index">Who We Are</a></li>
+                                <li><a asp-controller="Blog" asp-action="Index">Our Services</a></li>
+                                <li><a asp-controller="Contact" asp-action="Index">Projects</a></li>
+                                <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
+                                <li><a asp-controller="Product" asp-action="Index">Innovation</a></li>
+                                <li><a asp-controller="Product" asp-action="Index">Testimonials</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="footer__widget">
+                            <h6>Join Our Newsletter Now</h6>
+                            <p>
+                                Get E-mail updates about our latest shop and special offers.
+                            </p>
+                            <form action="#">
+                                <input type="text" placeholder="Enter your mail" />
+                                <button type="submit" class="site-btn">Subscribe</button>
+                            </form>
+                            <div class="footer__widget__social">
+                                @if (settings != null && settings.Any())
+                                {
+                                    @foreach (var link in settings)
+                                    {
+                                        if (link.Name.Equals("Facebook", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <a href="@link.Value" target="_blank"><i class="fa fa-facebook"></i></a>
+                                        }
+                                        else if (link.Name.Equals("Instagram", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <a href="@link.Value" target="_blank"><i class="fa fa-instagram"></i></a>
+                                        }
+                                        else if (link.Name.Equals("Twitter", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <a href="@link.Value" target="_blank"><i class="fa fa-twitter"></i></a>
+                                        }
+                                        else if (link.Name.Equals("Pinterest", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <a href="@link.Value" target="_blank"><i class="fa fa-pinterest"></i></a>
+                                        }
+                                    }
+                                }
+
+                                <!-- Hiển thị mặc định các biểu tượng khi không có dữ liệu -->
+                                <a href="https://facebook.com" target="_blank"><i class="fa fa-facebook"></i></a>
+                                <a href="https://instagram.com" target="_blank"><i class="fa fa-instagram"></i></a>
+                                <a href="https://twitter.com" target="_blank"><i class="fa fa-twitter"></i></a>
+                                <a href="https://pinterest.com" target="_blank"><i class="fa fa-pinterest"></i></a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer__copyright">
+                            <div class="footer__copyright__text">
+                                <p>
+                                    Copyright &copy;
+                                    <script>
+                                        document.write(new Date().getFullYear());
+                                    </script>
+                                    All rights reserved | This template is made with
+                                    <i class="fa fa-heart" aria-hidden="true"></i> by
+                                    <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                                </p>
+                            </div>
+                            <div class="footer__copyright__payment">
+                                <img src="~/uploads/payment-item.png" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+       @*   @if (ViewBag.isLogin != null)
+         {
+             <div class="chat-box-button">
+                 <i class="fas fa-comments"></i>
+                 <span class="notification-badge">1</span>
+             </div>
+
+             <div class="chat-box-container">
+                 <div class="chat-box-header">
+                     <h5>Liên hệ quản trị viên</h5>
+                     <button class="close-chat-box">
+                         <i class="fas fa-times"></i>
+                     </button>
+                 </div>
+
+                 <div class="chat-box-body">
+                     <div class="chat-messages">
+                         <!-- Messages will be appended here -->
+                     </div>
+                 </div>
+
+                 <div class="chat-box-footer">
+                     <div class="input-group">
+                         <input type="text" class="form-control" placeholder="Nhập tin nhắn...">
+                         <div class="input-group-append">
+                             <button class="btn btn-primary send-button">
+                                 <i class="fas fa-paper-plane"></i>
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         } *@
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="~/js/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/jquery.nice-select.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/jquery.slicknav.js"></script>
+    <script src="~/js/mixitup.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script type="text/javascript" charset="utf-8" src="~/js/chatbox.js"></script>
+
+    <script>
+        $(window).on('load', function () {
+            $("#preloder").fadeOut(1000);
+        });
+
+        function handleShowFavorite(elem) {
+            elem.querySelector(".favorite-menu").classList.toggle("show")
+        }
+
+        
+    </script>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatService = new ChatService("@ViewBag.HASH_MESSAGE_SECRET_KEY", "@ViewBag.PUBLIC_SIGNATURE_CLIENT_ID");
+            const token = "@ViewBag.Token";
+
+            console.log("Token: ", token)
+
+            if (!token) return;
+
+            chatService.connect(token);
+
+            const chatButton = document.querySelector('.chat-box-button');
+            const chatBox = document.querySelector('.chat-box-container');
+            const closeButton = document.querySelector('.close-chat-box');
+            const sendButton = document.querySelector('.send-button');
+            const messageInput = document.querySelector('.chat-box-footer input');
+            const messagesContainer = document.querySelector('.chat-messages');
+
+
+            chatService.onMessage((decryptedMessage) => {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message received';
+                messageElement.textContent = decryptedMessage;
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+
+            chatButton.addEventListener('click', function () {
+                chatBox.classList.toggle('active');
+                const badge = chatButton.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            });
+
+            closeButton.addEventListener('click', function () {
+                chatBox.classList.remove('active');
+            });
+
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'message sent';
+                    messageElement.textContent = message;
+                    messagesContainer.appendChild(messageElement);
+
+                    chatService.sendMessage('chat_message', {
+                        content: message,
+                        timestamp: new Date().toISOString()
+                    }, 'POST', null, token);
+
+                    messageInput.value = '';
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            }
+
+            sendButton.addEventListener('click', sendMessage);
+
+            messageInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

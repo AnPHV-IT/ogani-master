@@ -1,0 +1,137 @@
+﻿@model ogani_master.Models.Blog
+@{
+    ViewData["Title"] = Model.Title;
+    var relatedBlogs = (List<ogani_master.Models.Blog>)ViewData["RelatedBlogs"];
+    var settings = ViewBag.Settings as List<ogani_master.Models.Setting>;
+}
+
+<section class="blog-details-hero set-bg"
+         data-setbg="@Url.Content("~/uploads/blog/details/details-hero.jpg")">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="blog__details__hero__text text-center">
+                    <h1 class="text-white">@Model.Title</h1>
+                    <ul class="list-inline text-white mt-3">
+                        <li class="list-inline-item"><i class="fa fa-user"></i> Unknown Author</li>
+                        <li class="list-inline-item"><i class="fa fa-calendar"></i> @Model.CreatedAt.ToString("MMM dd, yyyy")</li>
+                        <li class="list-inline-item"><i class="fa fa-comments"></i> 0 Comments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="blog-details spad">
+    <div class="container">
+        <div class="row">
+            <!-- Blog Content -->
+            <div class="col-lg-8 col-md-7">
+                <div class="blog__details__text">
+                    <!-- Blog Image -->
+                    <div class="blog__details__img mb-4">
+                        <img class="img-fluid rounded"
+                             src="@Url.Content("~/data/blog/" + Model.Image)"
+                             alt="@Model.Title"
+                             style="width: 100%; height: auto; object-fit: cover;" />
+                    </div>
+                    <!-- Blog Content -->
+                    <div class="blog__details__content" style="line-height: 1.8; text-align: justify; word-wrap: break-word;">
+                        <p>
+                            @Html.Raw(Model.Content.Replace("\n", "<br />")) <!-- Giữ nguyên định dạng xuống dòng -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Blog Sidebar -->
+            <div class="col-lg-4 col-md-5">
+                <div class="blog__sidebar">
+                    <div class="blog__sidebar__search mb-4">
+                        <form method="get" action="@Url.Action("Detail", "Blog", new { id = Model.BlogId })">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="query" placeholder="Search recent posts..." value="@ViewData["SearchQuery"]" />
+                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="blog__sidebar__item">
+                        <h4 class="mb-3">Recent Posts</h4>
+                        @if (relatedBlogs != null && relatedBlogs.Any())
+                        {
+                            <ul class="list-unstyled">
+                                @foreach (var recent in relatedBlogs)
+                                {
+                                    <li class="mb-3">
+                                        <div>
+                                            <a href="@Url.Action("Detail", "Blog", new { id = recent.BlogId })" class="d-flex align-items-center">
+                                                <img class="rounded me-3"
+                                                     src="@Url.Content("~/data/blog/" + recent.Image)"
+                                                     alt="@recent.Title"
+                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                                <span class="me-5" style="margin-left:10px">@recent.Title</span>
+                                            </a>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No recent posts available.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="related-blog spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title related-blog-title">
+                    <h2>Post You May Like</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @if (relatedBlogs != null && relatedBlogs.Any())
+            {
+                @foreach (var blog in relatedBlogs)
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="blog__item mb-4">
+                            <div class="blog__item__pic">
+                                <a href="@Url.Action("Detail", "Blog", new { id = blog.BlogId })">
+                                    <img class="img-fluid rounded"
+                                         src="@Url.Content("~/data/blog/" + blog.Image)"
+                                         alt="@blog.Title"
+                                         style="width: 100%; height: 200px; object-fit: cover;" />
+                                </a>
+                            </div>
+                            <div class="blog__item__text mt-3" style="text-align: center;">
+                                <ul class="list-inline">
+                                    <li class="list-inline-item"><i class="fa fa-calendar-o"></i> @blog.CreatedAt.ToString("MMM dd, yyyy")</li>
+                                    <li class="list-inline-item"><i class="fa fa-comment-o"></i> 0</li>
+                                </ul>
+                                <h5>
+                                    <a href="@Url.Action("Detail", "Blog", new { id = blog.BlogId })">
+                                        @blog.Title
+                                    </a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p class="text-muted">No related posts found.</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>

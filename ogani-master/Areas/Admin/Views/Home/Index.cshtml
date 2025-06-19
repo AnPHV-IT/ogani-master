@@ -1,0 +1,296 @@
+﻿@using System.Globalization;
+
+@{
+    ViewData["tittle"] = "Dashboard";
+    List<UserBehaviorSummary> userBehaviorSummaries = ViewBag.userBehaviorSummaries;
+    DatabaseSizeInfo databaseSizeInfo = ViewBag.databaseSizeInfo;
+    int numberOfUsers = ViewBag.numberOfUsers;
+    decimal revenue = ViewBag.Revenue;
+    int cancelOrders = ViewBag.CancelOrders;
+}
+
+@section Styles {
+    <link href="~/css/demo.css" rel="stylesheet" />
+    <link href="~/Admin/css/Dashboard.css" rel="stylesheet" />
+}
+
+
+<div class="wrapper ">
+    <div style="background: #f4f3ef;" class="">
+        <div class="content mt-0">
+            <div class="row mt-4">
+                <div class="col-lg-3 col-md-6 col-sm-6 position-relative tooltip-view">
+                    <ul class="position-absolute d-none tooltip-view-detail">
+                        @foreach (DatabaseSizeViewModel databaseSizeViewModel in @databaseSizeInfo.tableSizes)
+                        {
+                            <li class="text-white">
+                                <i class="fa-regular fa-database"></i>
+                                <span>@databaseSizeViewModel.TableName - @databaseSizeViewModel.Capacity GB</span>
+                            </li>
+                        }
+                    </ul>
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-5 col-md-4 d-flex justify-content-center align-items-center">
+                                    <div class="icon-big text-center icon-warning">
+                                        <i style="font-size: 36px; color: orange" class="fa-duotone fa-regular fa-globe"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-md-8">
+                                    <div class="numbers">
+                                        <p class="card-category">Capacity</p>
+                                        <p class="card-title">@databaseSizeInfo.Capacity GB<p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-refresh"></i>
+                                Update Now
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-5 col-md-4 d-flex justify-content-center align-items-center">
+                                    <div class="icon-big text-center icon-warning">
+                                        <i style="font-size: 30px; color: green" class="fa-sharp-duotone fa-solid fa-money-check-dollar"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-md-8">
+                                    <div class="numbers">
+                                        <p class="card-category">Revenue</p>
+                                        <p class="card-title">@revenue.ToString("C0", new CultureInfo("en-US"))<p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-calendar-o"></i>
+                                Last day
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-5 col-md-4 d-flex justify-content-center align-items-center">
+                                    <div class="icon-big text-center icon-warning">
+                                        <i style="font-size: 30px; color: red" class="fa-regular fa-users-slash"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-md-8">
+                                    <div class="numbers">
+                                        <p class="card-category">Errors</p>
+                                        <p class="card-title">@cancelOrders<p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-clock-o"></i>
+                                In the last hour
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-5 col-md-4 d-flex justify-content-center align-items-center">
+                                    <div class="icon-big text-center icon-warning ">
+                                        <i style="font-size: 30px; color: aqua" class="fa-regular fa-user-secret"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-md-8">
+                                    <div class="numbers">
+                                        <p class="card-category">Users</p>
+                                        <p class="card-title">@numberOfUsers<p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-refresh"></i>
+                                Updated
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h5 style="margin-right: 4px" class="card-title">Users Behavior</h5>
+                            <p class="card-category">24 Hours performance</p>
+                        </div>
+                        <div class="card-body ">
+                            <canvas id=userBehaviorChart width="400" height="500"></canvas>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/chartjs.min.js"></script>
+    <script src="~/js/bootstrap-notify.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="~/js/demo.js"></script>
+
+    <script>
+        const userBehaviorData = @Html.Raw(Json.Serialize(@userBehaviorSummaries ?? []));
+
+        const BehaviorData = [
+            { hour: 0, count: 0 },
+            { hour: 1, count: 0 },
+            { hour: 2, count: 0 },
+            { hour: 3, count: 0 },
+            { hour: 4, count: 0 },
+            { hour: 5, count: 0 },
+            { hour: 6, count: 0 },
+            { hour: 7, count: 0 },
+            { hour: 8, count: 0 },
+            { hour: 9, count: 0 },
+            { hour: 10, count: 0 },
+            { hour: 11, count: 0 },
+            { hour: 12, count: 0 },
+            { hour: 13, count: 0 },
+            { hour: 14, count: 0 },
+            { hour: 15, count: 0 },
+            { hour: 16, count: 0 },
+            { hour: 17, count: 0 },
+            { hour: 18, count: 0 },
+            { hour: 19, count: 0 },
+            { hour: 20, count: 0 },
+            { hour: 21, count: 0 },
+            { hour: 22, count: 0 },
+            { hour: 23, count: 0 },
+        ]
+
+        console.log("Chart Data: ", userBehaviorData);
+        const labels = BehaviorData.map(data => `${data.hour}:00`);
+        const counts = BehaviorData.map(data => {
+            const info = userBehaviorData.find(u => u.hour === data.hour)
+            if(!info) {
+                return 0;
+            }
+
+            return info.count;
+           
+        });
+
+        const ctx = document.getElementById('userBehaviorChart').getContext('2d');
+
+        const colors = [
+            'rgba(34, 193, 195, 0.8)',
+            'rgba(28, 170, 237, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(24, 116, 165, 0.8)',
+            'rgba(44, 197, 215, 0.8)',
+            'rgba(0, 123, 255, 0.8)',
+            'rgba(33, 113, 184, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+            'rgba(255, 159, 64, 0.8)'
+        ];
+
+        const userBehaviorChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'User Actions (Last 24 Hours)',
+                    data: counts,
+                    backgroundColor: colors,
+                    borderColor: colors.map(color => color.replace('0.8', '1')),
+                    borderWidth: 1,
+                    hoverBackgroundColor: colors.map(color => color.replace('0.8', '0.9')),
+                    hoverBorderColor: colors.map(color => color.replace('0.8', '1')),
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.2)',
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Arial',
+                                size: 14,
+                            },
+                            stepSize: 1 
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(200, 200, 200, 0.2)',
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Arial',
+                                size: 14,
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        displayColors: false,
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return `Actions: ${tooltipItem.raw}`;
+                            }
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                family: 'Arial',
+                                size: 14,
+                                style: 'bold',
+                                color: '#4A4A4A'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+}
